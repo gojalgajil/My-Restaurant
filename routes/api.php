@@ -29,8 +29,10 @@ Route::middleware('auth')->group(function () {
     // Food management (CRUD)
     Route::apiResource('foods', FoodController::class)->except(['index', 'show']);
 
-    // Table management
-    Route::apiResource('tables', TableController::class)->except(['index', 'show']);
+    // Table management (CRUD)
+    Route::post('/tables', [TableController::class, 'store']);
+    Route::put('/tables/{id}', [TableController::class, 'update']);
+    Route::delete('/tables/{id}', [TableController::class, 'destroy']);
 
     // Order management
     Route::get('/orders', [OrderController::class, 'index']);
