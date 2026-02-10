@@ -40,6 +40,10 @@ class AuthController extends Controller
         // Generate simple API token
         $token = md5($user->id . $user->email . now());
 
+        // Save token to user
+        $user->api_token = $token;
+        $user->save();
+
         return response()->json([
             'success' => true,
             'message' => 'Login successful',
