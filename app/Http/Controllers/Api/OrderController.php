@@ -258,9 +258,56 @@ class OrderController extends Controller
             ], 404);
         }
 
-        $receiptService = new ReceiptService();
-        $html = $receiptService->generateReceiptHTML($order);
+        $order->load(['table', 'user', 'orderItems.food']);
 
-        return response($html)->header('Content-Type', 'text/html');
+        $receiptData = [
+            'order' => [
+                'id' => $order->id,
+                'table' => [
+                    'number' => $order->table->number,
+                    'capacity' => $order->table->capacity,
+                    'status' => $order->table->status
+                ],
+                'waiter' => [
+                    'name' => $order->user->name,
+                    'email' => $order->user->email,
+                    'role' => $order->user->role
+                ],
+                'status' => $order->status,
+                'date' => $order->created_at->format('d F Y H:i'),
+                'items' => $order->orderItems->map(function ($item) {
+                    return [
+                        'id' => $item->id,
+                        'food' => [
+                            'id' => $item->food->id,
+                            'name' => $item->food->name,
+                            'category' => $item->food->category
+                        ],
+                        'quantity' => $item->quantity,
+                        'price' => $item->price,
+                        'subtotal' => $item->subtotal,
+                        'notes' => $item->notes
+                    ];
+                }),
+                'totals' => [
+                    'subtotal' => $order->total_amount,
+                    'tax' => $order->tax_amount,
+                    'total' => $order->final_amount
+                ]
+            ],
+            'restaurant' => [
+                'name' => 'Restaurant API',
+                'address' => 'Jl. Contoh No. 123, Jakarta',
+                'phone' => '+62 21 1234 5678',
+                'email' => 'info@restaurant.com',
+            ],
+            'generated_at' => now()->format('d F Y H:i:s')
+        ];
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Receipt data retrieved successfully',
+            'data' => $receiptData
+        ]);
     }
 }

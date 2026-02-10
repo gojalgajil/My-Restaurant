@@ -42,6 +42,6 @@ Route::middleware('api.auth')->group(function () {
     Route::delete('/orders/{id}/items/{itemId}', [OrderController::class, 'removeItem']);
     Route::post('/orders/{id}/close', [OrderController::class, 'closeOrder']);
     Route::post('/orders/{id}/paid', [OrderController::class, 'markAsPaid']);
-    Route::get('/orders/{id}/receipt', [OrderController::class, 'getReceiptHTML']);
-    Route::get('/orders/{id}/receipt/pdf', [OrderController::class, 'generateReceipt']);
+Route::get('/orders/{id}/receipt', [OrderController::class, 'getReceiptHTML']);
+Route::get('/orders/{id}/receipt/pdf', [OrderController::class, 'generateReceipt']);
 });
