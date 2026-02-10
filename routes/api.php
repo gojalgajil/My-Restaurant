@@ -25,13 +25,13 @@ Route::middleware('auth:sanctum')->group(function () {
     // Auth routes
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
-    
+
     // Food management (CRUD)
     Route::apiResource('foods', FoodController::class)->except(['index', 'show']);
-    
+
     // Table management
     Route::apiResource('tables', TableController::class)->except(['index', 'show']);
-    
+
     // Order management
     Route::get('/orders', [OrderController::class, 'index']);
     Route::post('/orders', [OrderController::class, 'store']);
@@ -40,4 +40,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/orders/{id}/items/{itemId}', [OrderController::class, 'removeItem']);
     Route::post('/orders/{id}/close', [OrderController::class, 'closeOrder']);
     Route::post('/orders/{id}/paid', [OrderController::class, 'markAsPaid']);
+    Route::get('/orders/{id}/receipt', [OrderController::class, 'getReceiptHTML']);
+    Route::get('/orders/{id}/receipt/pdf', [OrderController::class, 'generateReceipt']);
 });

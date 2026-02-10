@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Table;
+use App\Services\ReceiptService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -229,5 +230,37 @@ class OrderController extends Controller
             'success' => true,
             'message' => 'Item removed from order successfully'
         ]);
+    }
+
+    public function generateReceipt(Request $request, string $id)
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found'
+            ], 404);
+        }
+
+        $receiptService = new ReceiptService();
+        return $receiptService->generateReceipt($order);
+    }
+
+    public function getReceiptHTML(Request $request, string $id)
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Order not found'
+            ], 404);
+        }
+
+        $receiptService = new ReceiptService();
+        $html = $receiptService->generateReceiptHTML($order);
+
+        return response($html)->header('Content-Type', 'text/html');
     }
 }
