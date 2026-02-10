@@ -75,7 +75,17 @@ class Order extends Model
     {
         $this->status = 'closed';
         $this->calculateTotal();
-        $this->table->markAsAvailable();
+
+        // Load the table relationship if not already loaded
+        if (!$this->relationLoaded('table')) {
+            $this->load('table');
+        }
+
+        // Mark table as available if table relationship exists
+        if ($this->table) {
+            $this->table->markAsAvailable();
+        }
+
         $this->save();
     }
 
