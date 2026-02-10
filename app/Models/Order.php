@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 class Order extends Model
 {
@@ -76,14 +77,27 @@ class Order extends Model
         $this->status = 'closed';
         $this->calculateTotal();
 
+        // Debug: Log what we have
+        \Log::info('closeOrder called for order ' . $this->id . ', table_id: ' . $this->table_id);
+
         // Load the table relationship if not already loaded
         if (!$this->relationLoaded('table')) {
             $this->load('table');
         }
 
+        // Debug: Log what we got after loading
+        \Log::info('Table relationship loaded:', [
+            'table_id' => $this->table_id,
+            'table_object' => $this->table,
+            'table_type' => gettype($this->table)
+        ]);
+
         // Mark table as available if table relationship exists
-        if ($this->table) {
+        if ($this->table && is_object($this->table)) {
+            \Log::info('Calling markAsAvailable on table');
             $this->table->markAsAvailable();
+        } else {
+            \Log::warning('Table not found or not an object, skipping markAsAvailable');
         }
 
         $this->save();
