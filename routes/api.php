@@ -21,7 +21,7 @@ Route::get('/foods', [FoodController::class, 'index']);
 Route::get('/foods/{id}', [FoodController::class, 'show']);
 
 // Protected routes
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware('auth')->group(function () {
     // Auth routes
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/me', [AuthController::class, 'me']);
