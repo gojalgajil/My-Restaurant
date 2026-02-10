@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Food;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class FoodController extends Controller
 {
@@ -103,6 +104,13 @@ class FoodController extends Controller
         }
 
         $food->update($request->all());
+
+        // Debug: Log the update
+        Log::info('Food updated:', [
+            'id' => $food->id,
+            'request_data' => $request->all(),
+            'updated_food' => $food->fresh()->toArray()
+        ]);
 
         return response()->json([
             'success' => true,
