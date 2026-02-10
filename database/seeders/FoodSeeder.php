@@ -33,7 +33,13 @@ class FoodSeeder extends Seeder
         ];
 
         foreach ($foods as $food) {
-            Food::create($food);
+            Food::create([
+                'name' => $food['name'],
+                'description' => $food['description'],
+                'category' => $food['category'],
+                'price' => $food['price'],
+                'available' => $food['available'],
+            ]);
         }
     }
 }
